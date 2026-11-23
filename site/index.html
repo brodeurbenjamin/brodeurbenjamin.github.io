@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hybrid_by_Ben</title>
+<meta name="description" content="Training tools from Hybrid_by_Ben.">
+<style>
+  :root {
+    --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#6a7280; --line:#e3e6eb;
+    --accent:#e4572e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0e1116; --card:#171b22; --text:#eef0f3; --muted:#8e97a6; --line:#262c36;
+            --accent:#ff7a50; }
+  }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif }
+  .wrap { max-width:720px; margin:0 auto; padding:32px 16px 60px }
+  h1 { font-size:26px; margin:0 0 4px }
+  .sub { color:var(--muted); margin:0 0 24px }
+  .tools { display:grid; gap:12px }
+  a.card { display:block; background:var(--card); border:1px solid var(--line); border-radius:12px;
+           padding:16px; color:inherit; text-decoration:none }
+  a.card:hover, a.card:focus-visible { border-color:var(--accent) }
+  a.card:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+  .card h2 { font-size:17px; margin:0 0 4px; display:flex; gap:8px; align-items:center }
+  .card p { margin:0; color:var(--muted) }
+  .tag { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;
+         color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:1px 8px }
+  .go { color:var(--accent); font-weight:600; margin-top:8px; display:block }
+  footer { color:var(--muted); font-size:12px; text-align:center; margin-top:32px }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hybrid_by_Ben</h1>
+  <p class="sub">Tools for hybrid training and HYROX racing.</p>
+
+  <div class="tools">
+    <a class="card" href="/baseline/">
+      <h2>BASELINE Tracking</h2>
+      <p>Log your quarterly BASELINE workout and see how you're improving.</p>
+      <span class="go">Open →</span>
+    </a>
+    <!-- Ticket Watch card goes here when /tickets/ is live (plan step 4). -->
+  </div>
+
+  <footer>© 2026 Hybrid_by_Ben. All rights reserved.</footer>
+</div>
+</body>
+</html>
