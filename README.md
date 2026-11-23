@@ -8,7 +8,7 @@ under it by path:
 |---|---|
 | `/` | this repo |
 | `/baseline/` | `brodeurbenjamin/baseline` |
-| `/tickets/` | `brodeurbenjamin/tickets` (planned) |
+| `/tickets/` | `brodeurbenjamin/tickets` |
 
 To add a tool: turn on Pages in its repo, leave its custom domain empty, and
 add a card for it to `site/index.html`.
