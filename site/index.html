@@ -31,6 +31,21 @@
   .tag { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em;
          color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:1px 8px }
   .go { color:var(--accent); font-weight:600; margin-top:8px; display:block }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:24px }
+  .panel h2 { font-size:17px; margin:0 0 4px } .panel > p { margin:0 0 12px; color:var(--muted) }
+  .fields { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)) }
+  .fields > div { min-width:0 } .fields .full { grid-column:1/-1 }
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:4px }
+  input, select, textarea { display:block; width:100%; min-width:0; margin:0; padding:10px; border:1px solid var(--line);
+         border-radius:8px; background:var(--bg); color:var(--text); font:inherit; font-size:16px /* stops iPhone zoom */ }
+  input, select { height:44px; padding:0 10px }
+  textarea { min-height:110px; resize:vertical }
+  button { padding:11px 18px; border:0; border-radius:8px; background:var(--accent); color:#fff;
+           font:inherit; font-weight:600; cursor:pointer }
+  button:disabled { opacity:.5; cursor:not-allowed }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+  .note { color:var(--muted); font-size:13px; margin:8px 0 0 } .note.ok { color:var(--text) } .note.err { color:var(--accent); font-weight:600 }
+  .trap { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden }
   footer { color:var(--muted); font-size:12px; text-align:center; margin-top:32px }
   footer p { margin:4px 0 } footer a { color:var(--accent); font-weight:600 }
 </style>
@@ -58,10 +73,63 @@
     </a>
   </div>
 
+  <section class="panel" aria-labelledby="frTitle">
+    <h2 id="frTitle">Feature Requests</h2>
+    <p>Something you'd like added or changed? Ben reads every request.</p>
+    <form id="fr" novalidate>
+      <div class="fields">
+        <div><label for="frTool">Which tool</label>
+          <select id="frTool"><option>General</option><option>BASELINE Tracking</option><option>Ticket Watch</option><option>Race Analysis</option><option>A new tool</option></select></div>
+        <div class="full"><label for="frIdea">Your request</label><textarea id="frIdea" maxlength="2000" required></textarea></div>
+        <div><label for="frName">Name (optional)</label><input id="frName" maxlength="30" autocomplete="given-name" placeholder="e.g. Sam K."></div>
+        <div><label for="frEmail">Email for a reply (optional)</label><input id="frEmail" type="email" maxlength="100" autocomplete="email"></div>
+      </div>
+      <div class="trap" aria-hidden="true"><label for="frWebsite">Leave this empty</label><input id="frWebsite" tabindex="-1" autocomplete="off"></div>
+      <p style="margin:14px 0 0"><button type="submit" id="frSend" disabled>Send request</button></p>
+      <p class="note" id="frMsg" role="status"></p>
+      <p class="note">Requests go to Ben privately; your email is never shown on the site.</p>
+    </form>
+  </section>
+
   <footer>
     <p>Questions or problems? Email <a href="mailto:support@hybridbyben.com">support@hybridbyben.com</a></p>
     <p>© 2026 Hybrid_by_Ben. All rights reserved.</p>
   </footer>
 </div>
+<script src="config.js"></script>
+<script>
+// Feature Requests: submits to a Google Form (google-form/Code.gs), which keeps
+// the request in Ben's Google account and notifies him. The button stays off
+// until site/config.js holds the form's address.
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const CFG = window.FEATURE_REQUESTS;
+  $('frSend').disabled = !CFG;
+  if (!CFG) $('frMsg').textContent = 'Requests open soon.';
+  $('fr').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const say = (cls, t) => { $('frMsg').className = 'note ' + cls; $('frMsg').textContent = t; };
+    const idea = $('frIdea').value.trim();
+    const email = $('frEmail').value.trim();
+    if (!idea) return say('err', 'Write your request first.');
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return say('err', "That email address doesn't look right. Leave it empty if you don't need a reply.");
+    if (!CFG) return;
+    if ($('frWebsite').value) return say('ok', 'Thanks! Your request was sent.'); // filled in by a bot: drop it quietly
+    $('frSend').disabled = true;
+    say('', 'Sending…');
+    try {
+      const E = CFG.ENTRY;
+      // Google Forms sends no CORS headers, so the reply can't be read; a network error still throws.
+      await fetch(CFG.FORM_ACTION, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({
+        [E.tool]: $('frTool').value, [E.idea]: idea, [E.name]: $('frName').value.trim(), [E.email]: email }) });
+      say('ok', 'Thanks! Your request was sent to Ben.');
+      $('frIdea').value = '';
+    } catch {
+      say('err', "Couldn't send that. Check your connection and try again.");
+    }
+    $('frSend').disabled = false;
+  });
+})();
+</script>
 </body>
 </html>
