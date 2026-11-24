@@ -20,7 +20,24 @@
          font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif }
   .wrap { max-width:720px; margin:0 auto; padding:32px 16px 60px }
   h1 { font-size:26px; margin:0 0 4px }
-  .sub { color:var(--muted); margin:0 0 24px }
+  /* Banner: the same dark band in both themes, so the brand looks the same. */
+  .banner { background:#16181d; color:#fff; border:1px solid var(--line); border-top:3px solid #ff7a50; border-radius:14px;
+            padding:24px 20px 20px; margin:0 0 24px }
+  .banner .top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 8px }
+  .banner h1 { font-size:30px; line-height:1.1; margin:0; letter-spacing:-.01em; min-width:0 }
+  .banner h1 span { color:#ff7a50 }
+  .banner p { color:#c3c8d1; margin:0 }
+  .ig { display:inline-flex; align-items:center; gap:8px; color:#fff; text-decoration:none; font-weight:600; font-size:14px;
+        border:1px solid #ff7a50; border-radius:999px; padding:7px 14px 7px 10px }
+  .ig:hover { background:rgba(255,122,80,.12) }
+  .ig:focus-visible { outline:2px solid #ff7a50; outline-offset:2px }
+  .ig svg { width:18px; height:18px; fill:none; stroke:#ff7a50; stroke-width:2 }
+  .ig svg .dot { fill:#ff7a50; stroke:none }
+  /* Phones: no room for the handle beside the title, so the button is the icon alone. */
+  @media (max-width: 520px) {
+    .ig { padding:9px; flex:none } .ig .handle { display:none } .ig svg { width:20px; height:20px }
+    .banner h1 { font-size:27px }
+  }
   .tools { display:grid; gap:12px }
   a.card { display:block; background:var(--card); border:1px solid var(--line); border-radius:12px;
            padding:16px; color:inherit; text-decoration:none }
@@ -52,8 +69,16 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Hybrid_by_Ben</h1>
-  <p class="sub">Tools for hybrid training and HYROX racing.</p>
+  <header class="banner">
+    <div class="top">
+      <h1>Hybrid<span>_</span>by<span>_</span>Ben</h1>
+      <a class="ig" href="https://www.instagram.com/hybrid_by_ben/" target="_blank" rel="noopener" aria-label="@hybrid_by_ben on Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle class="dot" cx="17.3" cy="6.7" r="1.2"/></svg>
+        <span class="handle">@hybrid_by_ben</span>
+      </a>
+    </div>
+    <p>Tools for hybrid training and HYROX racing.</p>
+  </header>
 
   <div class="tools">
     <a class="card" href="/baseline/">
