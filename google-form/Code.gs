@@ -4,15 +4,16 @@
  * Feature Requests — Google Form side.
  * The home page (site/index.html) submits to this form. Requests stay in the
  * form's responses in Ben's Google account (nothing goes to GitHub, since the
- * repos are public). Each request also sends Ben a notification on his private
- * admin ntfy topic: tool, idea and name, but never the email address, which
- * stays in Google only.
+ * repos are public), and each one is emailed to support@hybridbyben.com. When
+ * the requester leaves an email address it's set as Reply-To, so Ben can just
+ * reply.
  *
- * Script properties (Project Settings > Script properties):
- *   NTFY_ADMIN_TOPIC  Ben's private ntfy topic
+ * Script properties (Project Settings > Script properties), optional:
+ *   SUPPORT_EMAIL  where requests go (default support@hybridbyben.com)
  */
 const FIELDS = ['Tool', 'Idea', 'Name', 'Email'];
 const TOOLS = ['BASELINE Tracking', 'Ticket Watch', 'Race Analysis', 'A new tool', 'General'];
+const DEFAULT_TO = 'support@hybridbyben.com';
 
 /** Run once from the editor: creates the form and its submit trigger, and prints the page config. */
 function setup() {
@@ -54,32 +55,19 @@ function printConfig() {
 function onSubmit(e) {
   const a = {};
   e.response.getItemResponses().forEach(r => { a[r.getItem().getTitle()] = String(r.getResponse()).trim(); });
-  const idea = (a.Idea || '').slice(0, 2000);
+  const idea = (a.Idea || '').slice(0, 5000);
   if (!idea) return;
   const tool = TOOLS.indexOf(a.Tool) >= 0 ? a.Tool : 'General';
   const name = (a.Name || '').replace(/[^\p{L}\s.'-]/gu, '').trim().slice(0, 30);
-  notify_({
-    title: `Feature request: ${tool}`,
-    body: `${idea.length > 400 ? idea.slice(0, 400) + '…' : idea}\n— ${name || 'no name'}${a.Email ? ' (left an email: see the form responses)' : ''}`,
-    priority: 'default',
-  });
-}
-
-// ntfy headers must be plain ASCII. ntfy.sh limits requests per internet
-// address, and Apps Script shares addresses with other people's scripts, so a
-// 429 can happen for no fault of ours: wait and retry, up to 3 tries.
-function notify_(n) {
-  const topic = PropertiesService.getScriptProperties().getProperty('NTFY_ADMIN_TOPIC');
-  if (!topic) return console.warn('No NTFY_ADMIN_TOPIC set; skipped: ' + n.title);
-  const ascii = s => String(s).replace(/[’‘]/g, "'").replace(/[^\x20-\x7E]/g, '?');
-  const headers = { Title: ascii(n.title), Priority: n.priority || 'default' };
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = UrlFetchApp.fetch('https://ntfy.sh/' + topic, { method: 'post', payload: n.body, headers, muteHttpExceptions: true });
-    const code = res.getResponseCode();
-    if (code === 200) return true;
-    console.warn(`ntfy responded ${code} (try ${attempt} of 3): ${n.title}`);
-    if (code !== 429 && code < 500) return false;
-    if (attempt < 3) Utilities.sleep(10000 * attempt);
-  }
-  return false;
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.Email || '') ? a.Email.slice(0, 100) : '';
+  const to = PropertiesService.getScriptProperties().getProperty('SUPPORT_EMAIL') || DEFAULT_TO;
+  const options = { name: 'Hybrid_by_Ben feature requests' };
+  if (email) options.replyTo = email;   // just hit Reply to answer them
+  MailApp.sendEmail(to, `Feature request: ${tool}${name ? ` (${name})` : ''}`,
+    `${idea}\n\n` +
+    `Tool: ${tool}\n` +
+    `From: ${name || 'no name given'}\n` +
+    `Reply to: ${email || 'no email given'}\n` +
+    `Sent: ${Utilities.formatDate(new Date(), 'America/Toronto', 'EEE d MMM yyyy, h:mm a')} Eastern\n\n` +
+    `All requests are also in the form's Responses tab.`, options);
 }
