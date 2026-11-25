@@ -12,7 +12,7 @@
  *   SUPPORT_EMAIL  where requests go (default support@hybridbyben.com)
  */
 const FIELDS = ['Tool', 'Idea', 'Name', 'Email'];
-const TOOLS = ['BASELINE Tracking', 'Ticket Watch', 'Race Analysis', 'A new tool', 'General'];
+const TOOLS = ['BASELINE Tracking', 'Ticket Watch', 'Race Analysis', 'Race Day Plan', 'A new tool', 'General'];
 const DEFAULT_TO = 'support@hybridbyben.com';
 
 /** Run once from the editor: creates the form and its submit trigger, and prints the page config. */

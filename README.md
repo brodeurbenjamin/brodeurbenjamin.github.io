@@ -10,6 +10,7 @@ under it by path:
 | `/baseline/` | `brodeurbenjamin/baseline` |
 | `/tickets/` | `brodeurbenjamin/tickets` |
 | `/race-analysis/` | `brodeurbenjamin/race-analysis` |
+| `/race-plan/` | `brodeurbenjamin/race-plan` |
 
 To add a tool: turn on Pages in its repo, leave its custom domain empty, and
 add a card for it to `site/index.html`.
